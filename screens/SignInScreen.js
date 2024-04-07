@@ -1,9 +1,7 @@
 import { Image, SafeAreaView, Text, TouchableOpacity } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import icon from "../assets/sign-in.jpg";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-export default function SignInScreen({ promptAsync }) {
-  const value = AsyncStorage.getItem("@user");
+export default function SignInScreen({ promptAsync, userInfo }) {
   return (
     <SafeAreaView
       style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
@@ -21,7 +19,7 @@ export default function SignInScreen({ promptAsync }) {
         </Text>
       </Text>
       <Text style={{ fontSize: 32, fontWeight: "bold" }}>
-        {JSON.stringify(value, null, 2)}
+        {JSON.stringify(userInfo, null, 2)}
       </Text>
       <TouchableOpacity
         style={{

@@ -4,7 +4,7 @@ import * as Google from "expo-auth-session/build/providers/Google";
 import SignInScreen from "./screens/SignInScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as WebBrowser from "expo-web-browser";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -52,7 +52,7 @@ function App() {
 
   return userInfo ? (
     <View>
-      <Text>Hello</Text>
+      <Text>Hello{JSON.stringify(userInfo, null, 2)}</Text>
     </View>
   ) : (
     <SignInScreen promptAsync={promptAsync} />
