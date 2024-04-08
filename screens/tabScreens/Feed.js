@@ -6,6 +6,9 @@ import Tweet from "../../components/Tweets";
 const Feed = () => {
   const navigation = useNavigation();
 
+  const user = AsyncStorage.getItem("@user");
+  const userInfo = JSON.parse(user);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <FlatList
@@ -18,7 +21,22 @@ const Feed = () => {
         }}
         ListHeaderComponent={() => (
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>New tweets available</Text>
+            <Text style={styles.headerTitle}>
+              <View style={styles.card}>
+                {userInfo?.picture && (
+                  <Image
+                    source={{ uri: userInfo?.picture }}
+                    style={styles.image}
+                  />
+                )}
+                <Text style={styles.text}>Email: {userInfo?.email}</Text>
+                <Text style={styles.text}>
+                  Verified: {userInfo?.verified_email ? "yes" : "no"}
+                </Text>
+                <Text style={styles.text}>Name: {userInfo?.name}</Text>
+                {/* <Text style={styles.text}>{JSON.stringify(userInfo, null, 2)}</Text> */}
+              </View>
+            </Text>
           </View>
         )}
         ListHeaderComponentStyle={{ backgroundColor: "#ccc" }}

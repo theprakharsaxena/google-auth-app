@@ -4,7 +4,7 @@ import * as Google from "expo-auth-session/build/providers/Google";
 import SignInScreen from "./screens/SignInScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as WebBrowser from "expo-web-browser";
-import { Text, View } from "react-native";
+import Navigation from "./Navigation";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -19,20 +19,26 @@ function App() {
       "151339305053-ceg9dssh0saqmn01glcdgj8mgtetpqam.apps.googleusercontent.com",
   });
 
-  async function handleSignInWithGoogle() {
-    const user = await AsyncStorage.getItem("@user");
-    if (!user) {
-      if (response?.type) {
-        await getUerInfo(response.authentication.accessToken);
-      }
-    } else {
-      setUserInfo(JSON.parse(user));
-    }
-  }
-
   useEffect(() => {
+    async function handleSignInWithGoogle() {
+      const user = getLocalUser();
+      if (!user) {
+        if (response?.type) {
+          await getUerInfo(response.authentication.accessToken);
+        }
+      } else {
+        setUserInfo(JSON.parse(user));
+      }
+    }
+
     handleSignInWithGoogle();
   }, [response]);
+
+  const getLocalUser = async () => {
+    const data = await AsyncStorage.getItem("@user");
+    if (!data) return null;
+    return JSON.parse(data);
+  };
 
   const getUerInfo = async (token) => {
     if (!token) return;
@@ -43,19 +49,21 @@ function App() {
         },
       });
       const user = await res.json();
-      setUserInfo(data);
-      await AsyncStorage.setItem("@user", JSON.stringify(data));
+      setUserInfo(user);
+      await AsyncStorage.setItem("@user", JSON.stringify(user));
     } catch (err) {
       console.log(err);
     }
   };
 
   return userInfo ? (
-    <View>
-      <Text>Hello{JSON.stringify(userInfo, null, 2)}</Text>
-    </View>
+    <Navigation />
   ) : (
-    <SignInScreen promptAsync={promptAsync} />
+    <SignInScreen
+      promptAsync={promptAsync}
+      request={request}
+      userInfo={userInfo}
+    />
   );
 }
 
